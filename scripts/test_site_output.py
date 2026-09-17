@@ -76,6 +76,16 @@ def parse_page(relative_path: str) -> DocumentParser:
     return parser
 
 
+def post_urls() -> set[str]:
+    """Canonical URLs of every post actually built under dist/blog/."""
+
+    return {
+        f"{ORIGIN}/blog/{directory.name}/"
+        for directory in sorted((DIST / "blog").iterdir())
+        if directory.is_dir() and (directory / "index.html").is_file()
+    }
+
+
 class SiteOutputTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -145,11 +155,11 @@ class SiteOutputTests(unittest.TestCase):
         self.assertIsNotNone(channel)
         self.assertEqual(channel.findtext("language"), "zh-CN")
         self.assertEqual(channel.findtext("title"), "chunyan.dev · 春晏的 Rust 博客")
-        item = channel.find("item")
-        self.assertIsNotNone(item)
-        self.assertEqual(item.findtext("link"), ORIGIN + "/blog/hello-world/")
-        self.assertEqual(item.findtext("guid"), ORIGIN + "/blog/hello-world/")
-        self.assertEqual(item.findtext("author"), "christian.visintin@veeso.dev")
+        items = channel.findall("item")
+        self.assertEqual({item.findtext("link") for item in items}, post_urls())
+        for item in items:
+            self.assertEqual(item.findtext("guid"), item.findtext("link"))
+            self.assertEqual(item.findtext("author"), "christian.visintin@veeso.dev")
         rss_text = (DIST / "rss.xml").read_text(encoding="utf-8")
         self.assertNotIn("/rss/en.xml", rss_text)
         self.assertNotIn("/atom/en.xml", rss_text)
@@ -162,16 +172,19 @@ class SiteOutputTests(unittest.TestCase):
         self.assertEqual(self_link.attrib["rel"], "self")
         self.assertEqual(self_link.attrib["type"], "application/atom+xml")
         self.assertEqual(self_link.attrib["hreflang"], "zh-CN")
-        entry = atom.find(ATOM_NAMESPACE + "entry")
-        self.assertEqual(entry.findtext(ATOM_NAMESPACE + "author/" + ATOM_NAMESPACE + "name"), "春晏")
+        entries = atom.findall(ATOM_NAMESPACE + "entry")
         self.assertEqual(
-            entry.findtext(ATOM_NAMESPACE + "author/" + ATOM_NAMESPACE + "email"),
-            "christian.visintin@veeso.dev",
+            {entry.find(ATOM_NAMESPACE + "link").attrib["href"] for entry in entries},
+            post_urls(),
         )
-        self.assertEqual(
-            entry.find(ATOM_NAMESPACE + "link").attrib["href"],
-            ORIGIN + "/blog/hello-world/",
-        )
+        for entry in entries:
+            self.assertEqual(
+                entry.findtext(ATOM_NAMESPACE + "author/" + ATOM_NAMESPACE + "name"), "春晏"
+            )
+            self.assertEqual(
+                entry.findtext(ATOM_NAMESPACE + "author/" + ATOM_NAMESPACE + "email"),
+                "christian.visintin@veeso.dev",
+            )
 
     def test_sitemap_robots_and_404(self):
         sitemap = ElementTree.parse(DIST / "sitemap.xml").getroot()
@@ -186,8 +199,8 @@ class SiteOutputTests(unittest.TestCase):
                 ORIGIN + "/",
                 ORIGIN + "/blog/",
                 ORIGIN + "/privacy/",
-                ORIGIN + "/blog/hello-world/",
-            },
+            }
+            | post_urls(),
         )
         self.assertNotIn("/en/", "\n".join(locations))
 
