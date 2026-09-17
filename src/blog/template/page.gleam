@@ -12,6 +12,8 @@ import lustre/attribute
 import lustre/element.{type Element}
 import lustre/element/html
 
+const umami_website_id = "28aae568-00c2-42cc-b624-3b37166c558e"
+
 /// Configuration for rendering a page.
 pub type PageConfig {
   PageConfig(
@@ -133,6 +135,16 @@ fn head(config: PageConfig) -> Element(msg) {
       attribute.href("/blog.css"),
     ]),
     structured_data(config.structured_data),
+    html.script(
+      [
+        attribute.attribute("defer", ""),
+        attribute.src("https://cloud.umami.is/script.js"),
+        attribute.attribute("data-website-id", umami_website_id),
+        attribute.attribute("data-do-not-track", "true"),
+        attribute.attribute("data-auto-track", "true"),
+      ],
+      "",
+    ),
     html.script([], dark_mode_js),
   ])
 }
