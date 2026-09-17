@@ -13,7 +13,6 @@ gleam test
 gleam format
 gleam format --check src test
 just dev
-python3 -m unittest discover -s scripts -p 'test_*.py'
 ```
 
 `gleam run` 将网站构建到 `./dist`，`just dev` 在 3000 端口启动带实时重载的
