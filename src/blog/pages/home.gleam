@@ -1,7 +1,6 @@
 //// Homepage with the author's bio and latest Rust posts.
 
 import blog/components
-import blog/components/container
 import blog/components/heading
 import blog/components/post_preview
 import blog/site
@@ -40,37 +39,24 @@ fn page_content(posts: List(post.Post(Nil))) -> Element(Nil) {
 }
 
 fn bio() -> Element(Nil) {
-  container.responsive_row(
-    ["items-center", "justify-between", "gap-8", "p-10"],
-    [
-      html.div([], [
-        html.img([
-          attribute.src("/avatar.webp"),
-          attribute.alt("春晏的头像"),
-          attribute.loading("eager"),
-          components.classes(["rounded-full", "h-auto", "w-[128px]"]),
+  html.div([attribute.class("px-4")], [
+    html.p(
+      [
+        components.classes([
+          "text-brand",
+          "w-full",
+          "mb-3",
+          "text-justify",
+          "dark:text-gray-200",
         ]),
-      ]),
-      html.div([attribute.class("flex-1")], [
-        html.p(
-          [
-            components.classes([
-              "text-brand",
-              "w-full",
-              "mb-3",
-              "text-justify",
-              "dark:text-gray-200",
-            ]),
-          ],
-          [
-            element.text(
-              "你好，我是春晏（Christian Visintin），住在意大利乌迪内，是一名自由软件工程师，也做开源项目。这里专门聊 Rust：写代码时踩过的坑、折腾出来的东西，还有一些可能没必要、但我还是想说的看法。",
-            ),
-          ],
+      ],
+      [
+        element.text(
+          "你好，我是春晏（Christian Visintin），住在意大利乌迪内，是一名自由软件工程师，也做开源项目。这里专门聊 Rust：写代码时踩过的坑、折腾出来的东西，还有一些可能没必要、但我还是想说的看法。",
         ),
-      ]),
-    ],
-  )
+      ],
+    ),
+  ])
 }
 
 fn latest_posts(posts: List(post.Post(Nil))) -> Element(Nil) {
