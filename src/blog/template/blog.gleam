@@ -1,0 +1,387 @@
+//// Blog post page template with article layout and share buttons.
+
+import blog/components
+import blog/components/container
+import blog/components/heading
+import blog/components/post_meta
+import blog/components/svg
+import blog/site
+import blog/template/page
+import blogatto/post
+import gleam/dict
+import gleam/json
+import gleam/list
+import gleam/option
+import gleam/string
+import gleam/time/duration
+import gleam/time/timestamp
+import gleam/uri
+import lustre/attribute
+import lustre/element.{type Element}
+import lustre/element/html
+
+/// Render a full blog post page with featured image, metadata, and share buttons.
+pub fn template(
+  post: post.Post(msg),
+  all_posts: List(post.Post(msg)),
+) -> Element(msg) {
+  let config =
+    page.PageConfig(
+      title: post.title <> " | " <> site.name,
+      description: post.description,
+      url: post.url,
+      featured_image: absolute_featured_image(post),
+      page_type: "article",
+      structured_data: option.Some(article_structured_data(post)),
+      noindex: False,
+    )
+
+  page.page(config, [layout(post)], related_posts(post, all_posts))
+}
+
+/// Resolve the featured image to an absolute URL.
+///
+/// Social platforms like X.com require absolute og:image / twitter:image URLs
+/// to render preview cards; relative paths are silently ignored by them (while
+/// Mastodon resolves them against the page URL). Already-absolute URLs are kept
+/// as-is, relative paths are joined against the absolute post URL.
+fn absolute_featured_image(post: post.Post(msg)) -> option.Option(String) {
+  post.featured_image
+  |> option.map(fn(image) {
+    case image {
+      "http" <> _ -> image
+      path -> post.url <> path
+    }
+  })
+}
+
+fn article_structured_data(post: post.Post(msg)) -> String {
+  let image =
+    post
+    |> absolute_featured_image
+    |> option.unwrap(or: site.origin <> "/og_preview.jpeg")
+
+  json.object([
+    #("@context", json.string("https://schema.org")),
+    #("@type", json.string("BlogPosting")),
+    #("headline", json.string(post.title)),
+    #("description", json.string(post.description)),
+    #("url", json.string(post.url)),
+    #(
+      "mainEntityOfPage",
+      json.object([
+        #("@type", json.string("WebPage")),
+        #("@id", json.string(post.url)),
+      ]),
+    ),
+    #(
+      "datePublished",
+      json.string(timestamp.to_rfc3339(post.date, duration.seconds(0))),
+    ),
+    #("inLanguage", json.string(site.language)),
+    #(
+      "author",
+      json.object([
+        #("@type", json.string("Person")),
+        #("name", json.string(site.author_name)),
+      ]),
+    ),
+    #("image", json.string(image)),
+  ])
+  |> json.to_string
+  |> string.replace("<", "\\u003c")
+}
+
+fn layout(post: post.Post(msg)) -> Element(msg) {
+  let featured_image =
+    post.featured_image
+    |> option.map(attribute.src)
+    |> option.unwrap(or: attribute.none())
+
+  html.div(
+    [components.classes(["m-4", "max-w-3xl", "w-auto", "sm:max-w-full", "p-2"])],
+    [
+      html.img([
+        featured_image,
+        attribute.alt("文章配图：" <> post.description),
+        components.classes(["rounded", "inset-0"]),
+      ]),
+      html.div([], [
+        heading.h1(dict.new(), "", [element.text(post.title)]),
+      ]),
+      html.p(
+        [components.classes(["text-lg", "text-gray-600", "dark:text-gray-300"])],
+        [element.text(post.description)],
+      ),
+      html.div([components.classes(["mx-auto"])], [article(post)]),
+    ],
+  )
+}
+
+fn article(post: post.Post(msg)) -> Element(msg) {
+  html.article([components.classes(["px-4"])], [
+    container.responsive_row(
+      [
+        "items-center",
+        "justify-between",
+      ],
+      [
+        html.div([], [
+          post_meta.formatted_date(post.date),
+          element.text(" — "),
+          post_meta.reading_time(post),
+        ]),
+        share_buttons(post.url, post.title),
+      ],
+    ),
+    html.div([components.classes(["py-4"])], post.contents),
+    article_footer(post),
+  ])
+}
+
+fn article_footer(post: post.Post(msg)) -> Element(msg) {
+  container.col([], [
+    container.responsive_row(
+      [
+        "justify-between",
+        "items-center",
+        "my-10",
+        "sm:gap-8",
+      ],
+      [
+        container.responsive_row(
+          [
+            "items-center",
+            "justify-center",
+            "gap-8",
+          ],
+          [
+            html.a(
+              [
+                attribute.href("/blog/"),
+                components.classes([
+                  "font-medium",
+                  "text-lg",
+                  "text-brand",
+                  "dark:text-gray-300",
+                  "underline",
+                  "hover:no-underline",
+                ]),
+              ],
+              [element.text("更多 Rust 文章")],
+            ),
+            html.a(
+              [
+                attribute.href("https://hachyderm.io/@veeso_dev"),
+                components.classes([
+                  "font-medium",
+                  "text-brand",
+                  "dark:text-gray-200",
+                  "underline",
+                  "hover:no-underline",
+                ]),
+              ],
+              [
+                svg.mastodon(20),
+                element.text("在 Mastodon 上关注我"),
+              ],
+            ),
+            share_buttons(post.url, post.title),
+          ],
+        ),
+      ],
+    ),
+  ])
+}
+
+fn share_buttons(url: String, title: String) -> Element(msg) {
+  container.row(["text-brand", "dark:text-gray-200", "gap-8", "justify-end"], [
+    share_link(
+      facebook_share_url(url),
+      "分享到 Facebook",
+      svg.feather_icon("facebook"),
+    ),
+    share_link(x_share_url(url, title), "分享到 X", svg.x(20)),
+    share_link(
+      linkedin_share_url(url, title),
+      "分享到 LinkedIn",
+      svg.feather_icon("linkedin"),
+    ),
+    share_link(telegram_share_url(url, title), "分享到 Telegram", svg.telegram(20)),
+    share_link(whatsapp_share_url(url, title), "分享到 WhatsApp", svg.whatsapp(20)),
+  ])
+}
+
+fn share_link(href: String, label: String, icon: Element(msg)) -> Element(msg) {
+  html.a(
+    [
+      attribute.href(href),
+      attribute.target("_blank"),
+      attribute.attribute("rel", "noopener noreferrer"),
+      attribute.attribute("aria-label", label),
+      components.classes([
+        "transition-transform", "transform", "scale-100", "hover:scale-125",
+        "inline-flex", "items-center",
+      ]),
+    ],
+    [icon],
+  )
+}
+
+fn facebook_share_url(url: String) -> String {
+  "https://www.facebook.com/sharer/sharer.php?u=" <> uri.percent_encode(url)
+}
+
+fn x_share_url(url: String, title: String) -> String {
+  "https://twitter.com/intent/tweet?url="
+  <> uri.percent_encode(url)
+  <> "&text="
+  <> uri.percent_encode(title)
+}
+
+fn linkedin_share_url(url: String, title: String) -> String {
+  "https://www.linkedin.com/shareArticle?mini=true&url="
+  <> uri.percent_encode(url)
+  <> "&title="
+  <> uri.percent_encode(title)
+}
+
+fn telegram_share_url(url: String, title: String) -> String {
+  "https://t.me/share/url?url="
+  <> uri.percent_encode(url)
+  <> "&text="
+  <> uri.percent_encode(title)
+}
+
+fn whatsapp_share_url(url: String, title: String) -> String {
+  "https://wa.me/?text=" <> uri.percent_encode(title <> " " <> url)
+}
+
+fn related_posts(
+  post: post.Post(msg),
+  all_posts: List(post.Post(msg)),
+) -> Element(msg) {
+  case dict.get(post.extras, "category") {
+    Error(_) -> element.none()
+    Ok(category) -> {
+      let siblings =
+        all_posts
+        |> list.filter(fn(post) {
+          case dict.get(post.extras, "category") {
+            Error(_) -> False
+            Ok(post_category) -> post_category == category
+          }
+        })
+        |> list.shuffle
+        |> list.take(2)
+      case siblings {
+        [] -> element.none()
+        siblings -> related_posts_view(siblings)
+      }
+    }
+  }
+}
+
+fn related_posts_view(posts: List(post.Post(msg))) -> Element(msg) {
+  html.div([], [
+    html.div(
+      [
+        components.classes(["pt-4", "pb-2"]),
+      ],
+      [
+        html.span(
+          [
+            components.classes([
+              "text-xl",
+              "block",
+              "text-brand",
+              "dark:text-white",
+              "font-normal",
+            ]),
+          ],
+          [element.text("你可能还想看")],
+        ),
+      ],
+    ),
+    html.div(
+      [
+        components.classes([
+          "grid",
+          "grid-cols-2",
+          "sm:grid-cols-1",
+          "gap-4",
+          "items-start",
+          "justify-start",
+        ]),
+      ],
+      list.map(posts, related_post_card),
+    ),
+  ])
+}
+
+fn related_post_card(post: post.Post(msg)) -> Element(msg) {
+  let featured_image = case post.featured_image {
+    option.None -> element.none()
+    option.Some(url) -> {
+      let featured_image = post_uri(post) <> url
+      html.img([
+        attribute.src(featured_image),
+        attribute.alt("文章配图：" <> post.description),
+        attribute.class("rounded-t-lg"),
+      ])
+    }
+  }
+
+  html.a(
+    [
+      attribute.href(post_uri(post)),
+      components.classes([
+        "block",
+        "rounded",
+        "shadow-lg",
+        "dark:shadow-none",
+        "bg-white",
+        "dark:bg-zinc-800",
+        "text-brand",
+        "h-full",
+        "dark:text-gray-200",
+        "transition-transform",
+        "transform",
+        "hover:scale-105",
+      ]),
+    ],
+    [
+      html.div([components.classes(["rounded-t-lg", "inset-0"])], [
+        featured_image,
+      ]),
+      html.div([components.classes(["pt-4", "pb-6", "px-6"])], [
+        html.div([], [
+          html.span(
+            [
+              components.classes([
+                "text-md",
+                "sm:text-lg",
+                "py-2",
+                "dark:text-white",
+                "text-brand",
+                "font-normal",
+              ]),
+            ],
+            [element.text(post.title)],
+          ),
+        ]),
+        html.p(
+          [
+            components.classes(["text-justify", "text-brand", "dark:text-white"]),
+          ],
+          [element.text(post.excerpt)],
+        ),
+      ]),
+    ],
+  )
+}
+
+/// relative url to post
+fn post_uri(post: post.Post(msg)) -> String {
+  "/blog/" <> post.slug <> "/"
+}
