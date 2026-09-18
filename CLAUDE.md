@@ -63,7 +63,7 @@ Gleam 只是网站的实现技术，不是博客文章的编辑主题。
 
 - 每个页面只有一个 H1；首页的“最新文章”使用 H2，文章描述使用段落。
 - 首页标题是“春晏的 Rust 博客 | chunyan.dev”，文章标题使用“文章标题 | chunyan.dev”。
-- HTML 语言为 `zh-CN`，Open Graph locale 为 `zh_CN`，文章日期以 UTC+8 展示。
+- HTML 语言为 `zh-CN`，Open Graph locale 为 `zh_CN`，文章日期使用 CEST（`+02:00`）。
 - 文章日期保留原始时间戳，并同时输出带 ISO 时间的 `time` 元素和 JSON-LD。
 - JSON-LD 必须通过 JSON 序列化器生成，并转义脚本数据中的 `<`。
 - 图标使用内联 SVG；SVG 图形标记为装饰性内容，图标链接必须有中文 aria-label。

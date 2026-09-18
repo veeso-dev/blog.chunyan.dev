@@ -32,7 +32,7 @@ this blog doesn't take non-Rust posts even if the source blog does.
    assets (images) in its post directory.
 2. **Read `blog/post-1/index.md`** — this is the canonical frontmatter and
    body template. Match its field set and shape exactly:
-   - `date`: new date, format `"YYYY-MM-DD HH:MM:SS +08:00"` (UTC+8, per
+   - `date`: new date, format `"YYYY-MM-DD HH:MM:SS +02:00"` (CEST, per
      project convention — do not carry over the source's UTC/other offset).
    - `slug`: new, ASCII, stable, not a copy of the English slug.
    - `title`: plain Chinese title, no `| chunyan.dev` suffix (the template
