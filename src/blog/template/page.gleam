@@ -286,4 +286,5 @@ fn escape_script_data(json: String) -> String {
   string.replace(json, "<", "\\u003c")
 }
 
-const dark_mode_js = "(function(){try{var t=window.localStorage.getItem('theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(_){}})()"
+const dark_mode_js =
+  "(function(){try{var t=window.localStorage.getItem('theme');var d=t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.documentElement.classList.add('dark')}catch(_){}})()"

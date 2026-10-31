@@ -6,7 +6,7 @@ description: "一次 Solana 验证器内存优化带来的 Rust 实战经验：�
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '7'
+reading_time: "7"
 ---
 
 我也参与 Solana 验证器的开发，主要为 Solana RPC 节点编写一些定制模块。

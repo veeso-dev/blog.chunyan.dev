@@ -197,4 +197,5 @@ fn icon_link_classes() -> attribute.Attribute(msg) {
   ])
 }
 
-const theme_toggle_js = "(function(){var d=document.documentElement;var isDark=d.classList.contains('dark');if(isDark){d.classList.remove('dark')}else{d.classList.add('dark')}try{window.localStorage.setItem('theme',isDark?'light':'dark')}catch(_){}})()"
+const theme_toggle_js =
+  "(function(){var d=document.documentElement;var isDark=d.classList.contains('dark');if(isDark){d.classList.remove('dark')}else{d.classList.add('dark')}try{window.localStorage.setItem('theme',isDark?'light':'dark')}catch(_){}})()"

@@ -6,7 +6,7 @@ description: "在 Rust 中手动构建 Tokio 多线程运行时，并用 core_af
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '4'
+reading_time: "4"
 ---
 
 有些应用把性能压到极致时，不能再把线程调度完全交给操作系统，

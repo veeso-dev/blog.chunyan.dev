@@ -1,3 +1,7 @@
+import "./just/build.just"
+import "./just/code_check.just"
+import "./just/test.just"
+
 # Lists all the available commands
 default:
     @just --list

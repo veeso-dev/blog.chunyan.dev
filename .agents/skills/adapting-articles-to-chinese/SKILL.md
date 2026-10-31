@@ -101,11 +101,11 @@ this blog doesn't take non-Rust posts even if the source blog does.
 
 ## Common mistakes
 
-| Mistake | Fix |
-|---|---|
-| Hand-guessing `reading_time` | Always run `scripts/add_reading_time.py` after writing the file |
-| Directory named after the slug or task (`post-lego-gameboy`, `post-baseline-test`) | Use the next sequential `post-N` |
-| Sentence-by-sentence translation | Rewrite structure and phrasing in native Chinese; keep only technical substance 1:1 |
-| Copying the source's category taxonomy verbatim | Map to this blog's existing categories |
-| Adapting a non-Rust article | Stop and flag scope mismatch to the user first |
-| `author: "veeso"` carried over from source | Always `"春晏"` on this blog |
+| Mistake                                                                            | Fix                                                                                 |
+| ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Hand-guessing `reading_time`                                                       | Always run `scripts/add_reading_time.py` after writing the file                     |
+| Directory named after the slug or task (`post-lego-gameboy`, `post-baseline-test`) | Use the next sequential `post-N`                                                    |
+| Sentence-by-sentence translation                                                   | Rewrite structure and phrasing in native Chinese; keep only technical substance 1:1 |
+| Copying the source's category taxonomy verbatim                                    | Map to this blog's existing categories                                              |
+| Adapting a non-Rust article                                                        | Stop and flag scope mismatch to the user first                                      |
+| `author: "veeso"` carried over from source                                         | Always `"春晏"` on this blog                                                        |

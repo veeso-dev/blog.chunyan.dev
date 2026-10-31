@@ -6,7 +6,7 @@ description: "逐个认识 Rust std::mem 模块中的内存工具，从 drop、s
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '10'
+reading_time: "10"
 ---
 
 ## 一个不太常用的模块

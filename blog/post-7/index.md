@@ -6,7 +6,7 @@ description: "从 src crate、build.rs 到静态库打包，完整讲解如何�
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '11'
+reading_time: "11"
 ---
 
 如果你用过

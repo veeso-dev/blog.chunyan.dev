@@ -6,7 +6,7 @@ description: "从匹配优先级、逐行分词到 Include 指令，记录我用
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '10'
+reading_time: "10"
 ---
 
 你有没有过这种经历：刚开一个项目时觉得没什么难的，真正动手以后，
