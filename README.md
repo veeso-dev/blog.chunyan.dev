@@ -9,13 +9,13 @@
 
 ## 技术栈
 
-| 技术                                            | 用途                  |
-| --------------------------------------------- | ------------------- |
+| 技术                                          | 用途                        |
+| --------------------------------------------- | --------------------------- |
 | [Gleam](https://gleam.run/)                   | 编程语言，编译为 Erlang/OTP |
-| [Lustre](https://lustre.dev/)                 | UI 组件框架             |
-| [Blogatto](https://github.com/veeso/blogatto) | 静态站点生成器             |
-| [Tailwind CSS](https://tailwindcss.com/)      | 样式                  |
-| [Vercel](https://vercel.com/)                 | 静态站点托管              |
+| [Lustre](https://lustre.dev/)                 | UI 组件框架                 |
+| [Blogatto](https://github.com/veeso/blogatto) | 静态站点生成器              |
+| [Tailwind CSS](https://tailwindcss.com/)      | 样式                        |
+| [Vercel](https://vercel.com/)                 | 静态站点托管                |
 
 ## 项目结构
 

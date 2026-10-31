@@ -6,7 +6,7 @@ description: "从 windows-sys 依赖配置到连接清理，介绍如何借助 W
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '4'
+reading_time: "4"
 ---
 
 我开发了 termscp，这是一个功能比较完整的终端文件传输与文件浏览工具，
@@ -41,7 +41,7 @@ net use \\server\share /user:username [password]
 
 ```toml
 [dependencies]
-windows-sys = { version = "^0.48", features = [ "Win32_NetworkManagement_WNet" ] }
+windows-sys = { version = "^0.48", features = ["Win32_NetworkManagement_WNet"] }
 ```
 
 依赖准备好以后，就可以在客户端里挂载共享了。

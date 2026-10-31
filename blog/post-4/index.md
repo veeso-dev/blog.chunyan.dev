@@ -6,7 +6,7 @@ description: "从一个看似简单的范围字符串解析需求出发，拆解
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '8'
+reading_time: "8"
 ---
 
 ## 简单需求，复杂解法

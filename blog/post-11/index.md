@@ -6,7 +6,7 @@ description: "在 Rust 结构体中存放不同 trait 实现时，比较 Box<dyn
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '5'
+reading_time: "5"
 ---
 
 假设我们有一个 `Greet` trait，以及两种不同的实现：

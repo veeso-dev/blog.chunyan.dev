@@ -6,7 +6,7 @@ description: "从 Future、Pin、Poll、Context 和 Waker 入手，亲手实现�
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '9'
+reading_time: "9"
 ---
 
 很多 Rust 开发者每天都会写异步代码：给函数加上 `async`，在调用处写下

@@ -6,7 +6,7 @@ description: "用 rig 在 Rust 里统一 Anthropic、OpenAI、Gemini、Ollama �
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '11'
+reading_time: "11"
 ---
 
 ## 每个提供商都有一套自己的客户端

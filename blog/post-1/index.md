@@ -6,7 +6,7 @@ description: "一个专门聊 Rust 的中文博客，记录开发经验、踩过
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '1'
+reading_time: "1"
 ---
 
 你好，我是春晏，也就是 Christian Visintin。

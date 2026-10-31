@@ -6,7 +6,7 @@ description: "用 CMake、include_bytes! 和 libloading，把 C 共享库嵌入 
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '10'
+reading_time: "10"
 ---
 
 ## 为什么要这样做

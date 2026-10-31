@@ -6,7 +6,7 @@ description: "用 GlobalAlloc 实现可嵌入 Rust 应用的内存泄漏追踪�
 author: "春晏"
 featured_image: featured.jpeg
 category: "rust"
-reading_time: '11'
+reading_time: "11"
 ---
 
 前几天，我在一个 Rust 应用里碰到了内存问题。项目很大，进程占用的内存
